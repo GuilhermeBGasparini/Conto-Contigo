@@ -1,0 +1,361 @@
+/* Importando fonte moderna */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Corpo */
+body {
+    background: linear-gradient(to right, #00c853, #00695c);
+    color: white;
+    text-align: center;
+}
+
+/* Cabeçalho */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.logo {
+    width: 120px;
+    height: auto;
+}
+
+/* Menu de navegação */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Seção Hero */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    padding: 0 50px;
+    gap: 30px;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+/* Texto da seção Hero */
+.hero-text {
+    max-width: 600px;
+    text-align: left;
+}
+
+.hero h2 {
+    font-weight: 700;
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Imagem do personagem com dinheiro */
+.hero-image-container {
+    max-width: 300px;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Animação de fade-in */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animação de quicar */
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-15px);
+    }
+    50% {
+        transform: translateY(0);
+    }
+    75% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Animação de aparecer ao rolar */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animações nas seções */
+.about-us, .testimonials, .offer {
+    opacity: 0;
+    animation: fadeSlideIn 1s forwards;
+}
+
+.about-us {
+    animation-delay: 0.3s;
+}
+
+.testimonials {
+    animation-delay: 0.6s;
+}
+
+.offer {
+    animation-delay: 0.9s;
+}
+
+/* Estilo do botão */
+.btn {
+    display: inline-block;
+    background: #ff9800;
+    color: white;
+    font-size: 18px;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Seção Sobre Nós */
+.about-us {
+    padding: 60px 30px;
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+}
+
+.about-us h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.about-us p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Seção Testemunhos */
+.testimonials {
+    background-color: #ffffff;
+    color: #333;
+    padding: 60px 30px;
+    text-align: center;
+}
+
+.testimonials h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.testimonial-card {
+    background-color: #f9f9f9;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonials p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.testimonials strong {
+    font-weight: bold;
+}
+
+/* Seção Oferta */
+.offer {
+    padding: 60px 30px;
+    background-color: #00695c;
+    color: white;
+    text-align: center;
+}
+
+.offer h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.offer p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.offer .btn {
+    background-color: #ff9800;
+}
+
+/* Rodapé */
+footer {
+    background-color: #00695c;
+    padding: 20px;
+    color: white;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero h2 {
+        font-size: 32px;
+    }
+
+    .hero-image-container {
+        max-width: 150px;
+    }
+
+    .hero-image {
+        width: 100%;
+    }
+
+    .hero-text {
+        opacity: 1;
+    }
+
+    .about-us h2,
+    .testimonials h2,
+    .offer h2 {
+        font-size: 28px;
+    }
+
+    .footer-content {
+        font-size: 14px;
+    }
+}
+
+/* Link "Esqueci a Senha" */
+#forgot-password {
+    display: block;
+    margin-top: 10px;
+    color: #00695c;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+#forgot-password:hover {
+    text-decoration: underline;
+}
+/* ... (todo o seu CSS anterior permanece igual até o final) ... */
+
+/* Nova seção de consequências */
+.consequencias {
+    background-color: #fdf5e6; /* bege claro */
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .consequencias h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333333; /* texto escuro */
+  }
+  
+  .consequencias-container {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+  }
+  
+  .item {
+    max-width: 300px;
+    text-align: center;
+    color: #333333; /* texto escuro */
+  }
+  
+  .item strong {
+    color: #222222; /* mais contraste para o título */
+  }
+  
+  .img-pequena {
+    width: 200px;
+    height: auto;
+    margin-bottom: 15px;
+  }
+  
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .consequences-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .consequence-item {
+        max-width: 80%;
+    }
+}

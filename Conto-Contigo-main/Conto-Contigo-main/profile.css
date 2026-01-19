@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    text-align: center;
+    overflow: hidden;
+}
+
+.profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.profile-info h2 {
+    margin-bottom: 15px;
+}
+
+.profile-info p {
+    font-size: 18px;
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.mascote-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.mascote {
+    width: 80px;
+    animation: flutuar 3s infinite alternate ease-in-out;
+}
+
+@keyframes flutuar {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}

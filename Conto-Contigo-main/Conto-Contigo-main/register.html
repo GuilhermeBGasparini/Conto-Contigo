@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Conto Contigo</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="money-container"></div>
+    <div class="login-container">
+        <h2>Cadastrar-se</h2>
+        <form id="registerForm">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirm-password">Confirmar Senha:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+
+            <button type="submit">Cadastrar</button>
+            <a href="login.html" id="login-link">Já tem uma conta? Faça login aqui</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Validação de senhas
+            if (password !== confirmPassword) {
+                alert("As senhas não coincidem!");
+                return;
+            }
+
+            // Para este exemplo, vamos salvar no sessionStorage (não recomendado para produção)
+            sessionStorage.setItem("userName", name);
+            sessionStorage.setItem("userEmail", email);
+            sessionStorage.setItem("userPassword", password);
+
+            alert("Cadastro realizado com sucesso! Agora você pode fazer login.");
+            // Após o cadastro, redireciona para a página de login
+            window.location.href = "login.html";
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const moneyContainer = document.querySelector(".money-container");
+
+            function createMoney() {
+                const money = document.createElement("div");
+                money.classList.add("money");
+                money.innerHTML = "💸";
+                money.style.left = Math.random() * window.innerWidth + "px";
+                money.style.animationDuration = Math.random() * 3 + 2 + "s";
+                moneyContainer.appendChild(money);
+
+                setTimeout(() => {
+                    money.remove();
+                }, 5000);
+            }
+
+            setInterval(createMoney, 1000);
+        });
+    </script>
+</body>
+</html>

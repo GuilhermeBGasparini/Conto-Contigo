@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo 1 - Investimentos para Iniciantes</title>
+  <link rel="stylesheet" href="quiz3.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Investimentos para Iniciantes</h1>
+
+    <div id="lives-container">
+      Vidas: <span id="lives">❤️❤️❤️</span>
+    </div>
+
+    <div id="question-container">
+      <p id="question">Carregando pergunta...</p>
+      <div id="answer-buttons"></div>
+    </div>
+
+    <div id="feedback"></div>
+    <button id="next-btn">Próxima</button>
+
+    <div id="score-container" class="hidden">
+      <h2>Parabéns!</h2>
+      <p>Sua pontuação: <span id="score">0</span></p>
+      <a href="dentro-do-curso.html" class="btn">Voltar para o curso</a>
+    </div>
+
+    <div id="gameover-container" class="hidden">
+      <h2>Você ficou sem vidas 😢</h2>
+      <p>Tente novamente!</p>
+      <button onclick="startQuiz()" class="btn">Recomeçar</button>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="audio/correct.mp3"></audio>
+  <audio id="incorrect-sound" src="audio/incorrect.mp3"></audio>
+
+  <script>
+    const questions = [
+      {
+        question: "O que significa investir seu dinheiro?",
+        answers: [
+          { text: "Guardar dinheiro na carteira", correct: false },
+          { text: "Aplicar seu dinheiro para obter retorno", correct: true },
+          { text: "Gastar em coisas supérfluas", correct: false },
+          { text: "Evitar usar o banco", correct: false }
+        ],
+        explanation: "Investir significa aplicar seu dinheiro em algo que possa gerar lucro, como ações, fundos ou imóveis."
+      },
+      {
+        question: "Qual dessas é uma forma comum de investimento?",
+        answers: [
+          { text: "Cofrinho de moedas", correct: false },
+          { text: "Conta poupança", correct: true },
+          { text: "Guardar dinheiro no colchão", correct: false },
+          { text: "Comprar roupas caras", correct: false }
+        ],
+        explanation: "A poupança é uma das formas mais simples e acessíveis de investimento, embora com baixo rendimento."
+      },
+      {
+        question: "Qual é o principal risco de investir em ações?",
+        answers: [
+          { text: "Ganhar muito dinheiro", correct: false },
+          { text: "Não conseguir mais gastar", correct: false },
+          { text: "Perder parte do valor investido", correct: true },
+          { text: "Ter que abrir uma empresa", correct: false }
+        ],
+        explanation: "O mercado de ações é volátil, e os preços podem cair. É importante estudar antes de investir."
+      },
+      {
+        question: "O que é diversificação de investimentos?",
+        answers: [
+          { text: "Investir tudo em uma única empresa", correct: false },
+          { text: "Distribuir o dinheiro em diferentes tipos de investimento", correct: true },
+          { text: "Evitar investir para não ter prejuízo", correct: false },
+          { text: "Investir só na poupança", correct: false }
+        ],
+        explanation: "Diversificar reduz riscos: se um investimento vai mal, os outros podem compensar."
+      },
+      {
+        question: "Por que é importante começar a investir cedo?",
+        answers: [
+          { text: "Para ter menos trabalho no futuro", correct: false },
+          { text: "Para aproveitar os juros compostos ao longo do tempo", correct: true },
+          { text: "Porque é moda", correct: false },
+          { text: "Para gastar mais depois", correct: false }
+        ],
+        explanation: "Quanto antes você começa a investir, mais tempo tem para o dinheiro crescer com os juros compostos."
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const scoreContainer = document.getElementById("score-container");
+    const scoreElement = document.getElementById("score");
+    const gameoverContainer = document.getElementById("gameover-container");
+    const livesElement = document.getElementById("lives");
+    const feedbackElement = document.getElementById("feedback");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+      updateLives();
+      scoreContainer.classList.add("hidden");
+      gameoverContainer.classList.add("hidden");
+      nextButton.innerText = "Próxima";
+      showQuestion();
+    }
+
+    function updateLives() {
+      livesElement.textContent = "❤️".repeat(lives);
+    }
+
+    function showQuestion() {
+      resetState();
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.classList.add("hidden");
+      answerButtons.innerHTML = "";
+      feedbackElement.innerHTML = "";
+    }
+
+    function selectAnswer(e) {
+      const selectedButton = e.target;
+      const correct = selectedButton.dataset.correct === "true";
+
+      Array.from(answerButtons.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct === "true");
+        button.disabled = true;
+      });
+
+      if (correct) {
+        score++;
+        document.getElementById("correct-sound").play();
+      } else {
+        lives--;
+        updateLives();
+        document.getElementById("incorrect-sound").play();
+      }
+
+      const explanation = questions[currentQuestionIndex].explanation;
+      feedbackElement.innerHTML = `<p class="explanation">${explanation}</p>`;
+
+      if (lives <= 0) {
+        gameover();
+        return;
+      }
+
+      nextButton.classList.remove("hidden");
+    }
+
+    function setStatusClass(element, correct) {
+      if (correct) {
+        element.classList.add("correct");
+      } else {
+        element.classList.add("incorrect");
+      }
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        if (lives > 0) {
+          showScore();
+        } else {
+          gameover();
+        }
+      }
+    });
+
+    function showScore() {
+      resetState();
+      questionElement.innerText = "";
+      scoreContainer.classList.remove("hidden");
+      scoreElement.innerText = `${score} / ${questions.length}`;
+
+      // ✅ Salvar progresso da lição 2
+      let progress = JSON.parse(localStorage.getItem("progress")) || [];
+      if (!progress.includes(3)) {
+        progress.push(3);
+        localStorage.setItem("progress", JSON.stringify(progress));
+      }
+    }
+
+    function gameover() {
+      resetState();
+      questionElement.innerText = "";
+      gameoverContainer.classList.remove("hidden");
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>

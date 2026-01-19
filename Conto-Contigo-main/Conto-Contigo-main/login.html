@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Conto Contigo</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="money-container"></div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Entrar</button>
+            <a href="register.html" id="register-link">Não tem conta? Registre-se aqui</a>
+            <a href="#" id="forgot-password">Esqueci a senha</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Recupera os dados do cadastro armazenados no sessionStorage
+            const storedEmail = sessionStorage.getItem("userEmail");
+            const storedPassword = sessionStorage.getItem("userPassword");
+
+            if (email === storedEmail && password === storedPassword) {
+                // Salva no sessionStorage para simular que o usuário está logado
+                sessionStorage.setItem("isLoggedIn", "true");
+                // Redireciona para a página "Dentro do Curso"
+                window.location.href = "dentro-do-curso.html";
+            } else {
+                alert("E-mail ou senha incorretos!");
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const moneyContainer = document.querySelector(".money-container");
+
+            function createMoney() {
+                const money = document.createElement("div");
+                money.classList.add("money");
+                money.innerHTML = "💸";
+                money.style.left = Math.random() * window.innerWidth + "px";
+                money.style.animationDuration = Math.random() * 3 + 2 + "s";
+                moneyContainer.appendChild(money);
+
+                setTimeout(() => {
+                    money.remove();
+                }, 5000);
+            }
+
+            setInterval(createMoney, 1000);
+        });
+    </script>
+</body>
+</html>

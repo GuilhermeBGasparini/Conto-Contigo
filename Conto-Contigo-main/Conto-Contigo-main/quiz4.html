@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo 4 - Como Sair das Dívidas</title>
+  <link rel="stylesheet" href="quiz4.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Como Sair das Dívidas</h1>
+
+    <!-- Vidas -->
+    <div id="lives-container">
+      Vidas: <span id="lives">❤️❤️❤️</span>
+    </div>
+
+    <!-- Pergunta -->
+    <div id="question-container">
+      <p id="question">Carregando pergunta...</p>
+      <div id="answer-buttons"></div>
+    </div>
+
+    <div id="feedback"></div>
+    <button id="next-btn">Próxima</button>
+
+    <!-- Resultado -->
+    <div id="score-container" class="hidden">
+      <h2>Parabéns!</h2>
+      <p>Sua pontuação: <span id="score">0</span></p>
+      <a href="dentro-do-curso.html" class="btn">Voltar para o curso</a>
+    </div>
+
+    <!-- Fim por vidas -->
+    <div id="gameover-container" class="hidden">
+      <h2>Você ficou sem vidas 😢</h2>
+      <p>Tente novamente!</p>
+      <button onclick="startQuiz()" class="btn">Recomeçar</button>
+    </div>
+  </div>
+
+  <!-- Sons -->
+  <audio id="correct-sound" src="audio/correct.mp3"></audio>
+  <audio id="incorrect-sound" src="audio/incorrect.mp3"></audio>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual o primeiro passo para sair das dívidas?",
+        answers: [
+          { text: "Ignorar as cobranças", correct: false },
+          { text: "Fazer um levantamento de todas as dívidas", correct: true },
+          { text: "Pedir mais empréstimos", correct: false },
+          { text: "Cancelar contas essenciais", correct: false }
+        ],
+        explanation: "O primeiro passo é saber exatamente o valor total das suas dívidas para poder organizar um plano de pagamento realista."
+      },
+      {
+        question: "O que é renegociação de dívidas?",
+        answers: [
+          { text: "Aumentar o valor da dívida", correct: false },
+          { text: "Conversar com o credor para conseguir melhores condições de pagamento", correct: true },
+          { text: "Pedir mais dinheiro emprestado", correct: false },
+          { text: "Ignorar o problema", correct: false }
+        ],
+        explanation: "Renegociar significa ajustar os prazos, juros ou valores para algo que caiba no seu orçamento."
+      },
+      {
+        question: "Qual atitude ajuda a evitar novas dívidas?",
+        answers: [
+          { text: "Fazer um orçamento mensal", correct: true },
+          { text: "Gastar sem controle", correct: false },
+          { text: "Viver apenas com cartão de crédito", correct: false },
+          { text: "Comprar por impulso", correct: false }
+        ],
+        explanation: "Um orçamento mensal ajuda a visualizar receitas e despesas, evitando gastos acima do que você pode pagar."
+      },
+      {
+        question: "É recomendado usar o cheque especial para pagar dívidas?",
+        answers: [
+          { text: "Sim, sempre", correct: false },
+          { text: "Somente se o limite for alto", correct: false },
+          { text: "Não, pois os juros são muito altos", correct: true },
+          { text: "Sim, porque é prático", correct: false }
+        ],
+        explanation: "O cheque especial tem um dos maiores juros do mercado e deve ser evitado sempre que possível."
+      },
+      {
+        question: "O que fazer após quitar todas as dívidas?",
+        answers: [
+          { text: "Começar a se endividar novamente", correct: false },
+          { text: "Criar uma reserva de emergência", correct: true },
+          { text: "Parar de se preocupar com o dinheiro", correct: false },
+          { text: "Voltar a gastar tudo o que ganha", correct: false }
+        ],
+        explanation: "A reserva de emergência ajuda a enfrentar imprevistos sem precisar recorrer a dívidas novamente."
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const feedbackElement = document.getElementById("feedback");
+    const scoreContainer = document.getElementById("score-container");
+    const scoreElement = document.getElementById("score");
+    const gameoverContainer = document.getElementById("gameover-container");
+    const livesElement = document.getElementById("lives");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+      updateLives();
+      scoreContainer.classList.add("hidden");
+      gameoverContainer.classList.add("hidden");
+      feedbackElement.innerText = "";
+      nextButton.innerText = "Próxima";
+      showQuestion();
+    }
+
+    function updateLives() {
+      livesElement.textContent = "❤️".repeat(lives);
+    }
+
+    function showQuestion() {
+      resetState();
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.classList.add("hidden");
+      answerButtons.innerHTML = "";
+      feedbackElement.innerText = "";
+    }
+
+    function selectAnswer(e) {
+      const selectedButton = e.target;
+      const correct = selectedButton.dataset.correct === "true";
+
+      Array.from(answerButtons.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct === "true");
+        button.disabled = true;
+      });
+
+      if (correct) {
+        score++;
+        document.getElementById("correct-sound").play();
+      } else {
+        lives--;
+        updateLives();
+        document.getElementById("incorrect-sound").play();
+      }
+
+      feedbackElement.innerText = questions[currentQuestionIndex].explanation;
+
+      if (lives <= 0) {
+        gameover();
+        return;
+      }
+
+      nextButton.classList.remove("hidden");
+    }
+
+    function setStatusClass(element, correct) {
+      if (correct) {
+        element.classList.add("correct");
+      } else {
+        element.classList.add("incorrect");
+      }
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        if (lives > 0) {
+          showScore();
+        } else {
+          gameover();
+        }
+      }
+    });
+
+    function showScore() {
+      resetState();
+      questionElement.innerText = "";
+      scoreContainer.classList.remove("hidden");
+      scoreElement.innerText = `${score} / ${questions.length}`;
+
+      // ✅ Salvar progresso da lição 2
+      let progress = JSON.parse(localStorage.getItem("progress")) || [];
+      if (!progress.includes(4)) {
+        progress.push(4);
+        localStorage.setItem("progress", JSON.stringify(progress));
+      }
+    }
+
+    function gameover() {
+      resetState();
+      questionElement.innerText = "";
+      gameoverContainer.classList.remove("hidden");
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>

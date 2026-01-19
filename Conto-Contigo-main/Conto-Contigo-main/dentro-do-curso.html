@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dentro do Curso - Conto Contigo</title>
+  <link rel="stylesheet" href="course.css">
+</head>
+<body>
+  <div class="money-container"></div>
+
+  <div class="course-container">
+    <header>
+      <h1>Bem-vindo, <span id="userName"></span>!</h1>
+      <nav>
+        <a href="index.html">Início</a>
+        <a href="profile.html">Meu Perfil</a>
+        <a href="#" onclick="logout()">Sair</a>
+      </nav>
+    </header>
+
+    <section class="progress">
+      <h2>Progresso</h2>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <section class="lessons">
+      <h2>Lições</h2>
+
+      <div class="lesson-grid">
+
+        <img src="img/moedinha.png" alt="Moeda com capa de herói" class="decorative-img small-img">
+
+        <div class="lesson-item">
+          <div class="lesson-circle" id="lesson1" onclick="startLesson(1)">1</div>
+          <span class="lesson-text">Introdução à Educação Financeira</span>
+        </div>
+
+        <div class="lesson-item">
+          <div class="lesson-circle" id="lesson2" onclick="startLesson(2)">2</div>
+          <span class="lesson-text">Como Criar um Orçamento</span>
+        </div>
+
+        <div class="lesson-item">
+          <div class="lesson-circle" id="lesson3" onclick="startLesson(3)">3</div>
+          <span class="lesson-text">Investimentos para Iniciantes</span>
+        </div>
+
+        <div class="lesson-item">
+          <div class="lesson-circle" id="lesson4" onclick="startLesson(4)">4</div>
+          <span class="lesson-text">Como Sair das Dívidas</span>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+      const userName = sessionStorage.getItem("userName");
+      const progress = JSON.parse(localStorage.getItem("progress")) || [];
+
+      if (!isLoggedIn) {
+        window.location.href = "login.html";
+      }
+
+      document.getElementById("userName").innerText = userName || "Usuário";
+
+      // Marcar lições concluídas
+      progress.forEach(lesson => {
+        const circle = document.getElementById(`lesson${lesson}`);
+        if (circle) {
+          circle.classList.add("completed");
+        }
+      });
+
+      // Atualizar barra de progresso
+      const progressFill = document.getElementById("progressFill");
+      const percent = (progress.length / 4) * 100;
+      progressFill.style.width = percent + "%";
+
+      // Efeito dinheiro
+      const moneyContainer = document.querySelector(".money-container");
+      function createMoney() {
+        const money = document.createElement("div");
+        money.classList.add("money");
+        money.innerHTML = "💸";
+        money.style.left = Math.random() * window.innerWidth + "px";
+        money.style.animationDuration = Math.random() * 3 + 2 + "s";
+        moneyContainer.appendChild(money);
+        setTimeout(() => money.remove(), 5000);
+      }
+      setInterval(createMoney, 1000);
+    });
+
+    function startLesson(number) {
+      const progress = JSON.parse(localStorage.getItem("progress")) || [];
+      window.location.href = `quiz${number}.html`;
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

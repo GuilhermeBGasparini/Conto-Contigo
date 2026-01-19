@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Conto Contigo</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <header>
+            <h1>Meu Perfil</h1>
+            <nav>
+                <a href="dentro-do-curso.html">Voltar ao Curso</a>
+                <a href="logout.html">Sair</a>
+            </nav>
+        </header>
+        
+        <section class="profile-info">
+            <h2>Informações do Usuário</h2>
+            <p><strong>Nome:</strong> <span id="profileName"></span></p>
+            <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
+            <p><strong>Data de Registro:</strong> <span id="registerDate"></span></p>
+        </section>
+
+        <div class="mascote-container">
+            <img src="img/dinheiro.png" alt="Mascote Dinheiro" class="mascote">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+            if (!isLoggedIn) {
+                window.location.href = "login.html";
+            }
+
+            document.getElementById("profileName").innerText = sessionStorage.getItem("userName") || "Usuário";
+            document.getElementById("profileEmail").innerText = sessionStorage.getItem("userEmail") || "Email não disponível";
+            document.getElementById("registerDate").innerText = sessionStorage.getItem("registerDate") || "Data não disponível";
+        });
+    </script>
+</body>
+</html>

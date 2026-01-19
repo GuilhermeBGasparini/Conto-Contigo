@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo 1 - Como Criar um Orçamento</title>
+  <link rel="stylesheet" href="quiz2.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Como Criar um Orçamento</h1>
+
+    <div id="lives-container">
+      Vidas: <span id="lives">❤️❤️❤️</span>
+    </div>
+
+    <div id="question-container">
+      <p id="question">Carregando pergunta...</p>
+      <div id="answer-buttons"></div>
+    </div>
+
+    <div id="feedback" class="explanation hidden"></div>
+    <button id="next-btn">Próxima</button>
+
+    <div id="score-container" class="hidden">
+      <h2>Parabéns!</h2>
+      <p>Sua pontuação: <span id="score">0</span></p>
+      <a href="dentro-do-curso.html" class="btn">Voltar para o curso</a>
+    </div>
+
+    <div id="gameover-container" class="hidden">
+      <h2>Você ficou sem vidas 😢</h2>
+      <p>Tente novamente!</p>
+      <button onclick="startQuiz()" class="btn">Recomeçar</button>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="audio/correct.mp3"></audio>
+  <audio id="incorrect-sound" src="audio/incorrect.mp3"></audio>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual é o primeiro passo para criar um orçamento pessoal?",
+        answers: [
+          { text: "Começar a investir", correct: false },
+          { text: "Registrar todos os ganhos e gastos", correct: true },
+          { text: "Cortar todos os gastos", correct: false },
+          { text: "Fazer uma dívida para controlar", correct: false }
+        ],
+        explanation: "Antes de qualquer coisa, é essencial saber quanto você ganha e quanto gasta. Isso permite ter uma visão clara da sua situação financeira."
+      },
+      {
+        question: "Por que registrar os gastos é importante?",
+        answers: [
+          { text: "Para gastar mais com lazer", correct: false },
+          { text: "Para controlar melhor onde o dinheiro está sendo usado", correct: true },
+          { text: "Para pagar mais impostos", correct: false },
+          { text: "Para parecer mais organizado", correct: false }
+        ],
+        explanation: "Registrar os gastos permite identificar para onde o dinheiro está indo e ajustar hábitos de consumo se necessário."
+      },
+      {
+        question: "Qual é um exemplo de gasto fixo?",
+        answers: [
+          { text: "Cinema", correct: false },
+          { text: "Assinatura de internet", correct: true },
+          { text: "Compras do mês", correct: false },
+          { text: "Presente de aniversário", correct: false }
+        ],
+        explanation: "Gastos fixos são aqueles que se repetem mensalmente, como aluguel, contas de luz, ou uma assinatura de internet."
+      },
+      {
+        question: "O que fazer ao perceber que está gastando mais do que ganha?",
+        answers: [
+          { text: "Ignorar e continuar", correct: false },
+          { text: "Cortar ou reduzir gastos desnecessários", correct: true },
+          { text: "Pedir empréstimo para cobrir", correct: false },
+          { text: "Cancelar o orçamento", correct: false }
+        ],
+        explanation: "Quando os gastos estão maiores que os ganhos, o ideal é rever as despesas e cortar os excessos para equilibrar as finanças."
+      },
+      {
+        question: "Qual dessas atitudes ajuda a manter o orçamento em dia?",
+        answers: [
+          { text: "Evitar registrar os gastos", correct: false },
+          { text: "Fazer um controle mensal e acompanhar os resultados", correct: true },
+          { text: "Gastar tudo com promoções", correct: false },
+          { text: "Nunca planejar o mês", correct: false }
+        ],
+        explanation: "Manter um controle mensal permite analisar os resultados, entender seus hábitos e tomar melhores decisões no futuro."
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const scoreContainer = document.getElementById("score-container");
+    const scoreElement = document.getElementById("score");
+    const gameoverContainer = document.getElementById("gameover-container");
+    const livesElement = document.getElementById("lives");
+    const feedbackElement = document.getElementById("feedback");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+      updateLives();
+      scoreContainer.classList.add("hidden");
+      gameoverContainer.classList.add("hidden");
+      feedbackElement.classList.add("hidden");
+      nextButton.innerText = "Próxima";
+      showQuestion();
+    }
+
+    function updateLives() {
+      livesElement.textContent = "❤️".repeat(lives);
+    }
+
+    function showQuestion() {
+      resetState();
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.classList.add("hidden");
+      answerButtons.innerHTML = "";
+      feedbackElement.classList.add("hidden");
+      feedbackElement.innerText = "";
+    }
+
+    function selectAnswer(e) {
+      const selectedButton = e.target;
+      const correct = selectedButton.dataset.correct === "true";
+
+      Array.from(answerButtons.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct === "true");
+        button.disabled = true;
+      });
+
+      if (correct) {
+        score++;
+        document.getElementById("correct-sound").play();
+      } else {
+        lives--;
+        updateLives();
+        document.getElementById("incorrect-sound").play();
+      }
+
+      if (lives <= 0) {
+        gameover();
+        return;
+      }
+
+      feedbackElement.innerText = questions[currentQuestionIndex].explanation;
+      feedbackElement.classList.remove("hidden");
+      nextButton.classList.remove("hidden");
+    }
+
+    function setStatusClass(element, correct) {
+      element.classList.add(correct ? "correct" : "incorrect");
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        if (lives > 0) {
+          showScore();
+        } else {
+          gameover();
+        }
+      }
+    });
+
+    function showScore() {
+      resetState();
+      questionElement.innerText = "";
+      scoreContainer.classList.remove("hidden");
+      scoreElement.innerText = `${score} / ${questions.length}`;
+
+      // ✅ Salvar progresso da lição 2
+      let progress = JSON.parse(localStorage.getItem("progress")) || [];
+      if (!progress.includes(2)) {
+        progress.push(2);
+        localStorage.setItem("progress", JSON.stringify(progress));
+      }
+    }
+
+    function gameover() {
+      resetState();
+      questionElement.innerText = "";
+      gameoverContainer.classList.remove("hidden");
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>

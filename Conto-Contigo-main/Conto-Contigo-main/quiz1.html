@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo 1 - Introdução à Educação Financeira</title>
+  <link rel="stylesheet" href="quiz1.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Introdução à Educação Financeira</h1>
+
+    <div id="lives-container">Vidas: <span id="lives">❤️❤️❤️</span></div>
+
+    <div id="question-container">
+      <p id="question">Carregando pergunta...</p>
+      <div id="answer-buttons"></div>
+    </div>
+
+    <div id="feedback"></div>
+    <p id="explanation" class="explanation"></p>
+    <button id="next-btn">Próxima</button>
+
+    <div id="score-container" class="hidden">
+      <h2>Parabéns!</h2>
+      <p>Sua pontuação: <span id="score">0</span></p>
+      <a href="dentro-do-curso.html" class="btn">Voltar para o curso</a>
+    </div>
+
+    <div id="gameover-container" class="hidden">
+      <h2>Você ficou sem vidas 😢</h2>
+      <p>Tente novamente!</p>
+      <button onclick="startQuiz()" class="btn">Recomeçar</button>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="audio/correct.mp3"></audio>
+  <audio id="incorrect-sound" src="audio/incorrect.mp3"></audio>
+
+  <script>
+    const questions = [
+      {
+        question: "O que é educação financeira?",
+        answers: [
+          { text: "Aprender a fazer cálculos matemáticos", correct: false },
+          { text: "Aprender a controlar e planejar o uso do dinheiro", correct: true },
+          { text: "Estudar economia avançada", correct: false },
+          { text: "Guardar dinheiro sem motivo", correct: false }
+        ],
+        explanation: "Educação financeira é saber como controlar, planejar e usar o dinheiro de forma consciente."
+      },
+      {
+        question: "Qual dessas atitudes mostra boa educação financeira?",
+        answers: [
+          { text: "Gastar todo o salário no mesmo dia", correct: false },
+          { text: "Investir parte da renda mensal", correct: true },
+          { text: "Pedir empréstimos para comprar roupas", correct: false },
+          { text: "Não fazer nenhum planejamento", correct: false }
+        ],
+        explanation: "Investir parte da renda é uma prática saudável que ajuda a crescer financeiramente no longo prazo."
+      },
+      {
+        question: "O que é um orçamento pessoal?",
+        answers: [
+          { text: "Um tipo de imposto", correct: false },
+          { text: "Planejamento de receitas e despesas", correct: true },
+          { text: "Valor do salário bruto", correct: false },
+          { text: "Lista de compras", correct: false }
+        ],
+        explanation: "O orçamento pessoal é o controle de quanto entra e sai de dinheiro para planejar melhor o futuro."
+      },
+      {
+        question: "Por que é importante guardar dinheiro?",
+        answers: [
+          { text: "Para emergências e realizar objetivos", correct: true },
+          { text: "Para parecer rico", correct: false },
+          { text: "Para emprestar aos amigos", correct: false },
+          { text: "Porque sim", correct: false }
+        ],
+        explanation: "Guardar dinheiro é essencial para se proteger de imprevistos e conquistar sonhos."
+      },
+      {
+        question: "Qual dessas opções é um investimento?",
+        answers: [
+          { text: "Guardar dinheiro no cofrinho", correct: false },
+          { text: "Comprar uma ação na bolsa", correct: true },
+          { text: "Gastar tudo com lazer", correct: false },
+          { text: "Deixar o dinheiro parado na carteira", correct: false }
+        ],
+        explanation: "Investimentos como ações podem gerar retorno financeiro, diferente de só guardar o dinheiro."
+      }
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const scoreContainer = document.getElementById("score-container");
+    const scoreElement = document.getElementById("score");
+    const gameoverContainer = document.getElementById("gameover-container");
+    const livesElement = document.getElementById("lives");
+    const explanationElement = document.getElementById("explanation");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let lives = 3;
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      lives = 3;
+      updateLives();
+      scoreContainer.classList.add("hidden");
+      gameoverContainer.classList.add("hidden");
+      nextButton.innerText = "Próxima";
+      showQuestion();
+    }
+
+    function updateLives() {
+      livesElement.textContent = "❤️".repeat(lives);
+    }
+
+    function showQuestion() {
+      resetState();
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtons.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.classList.add("hidden");
+      answerButtons.innerHTML = "";
+      explanationElement.innerText = "";
+    }
+
+    function selectAnswer(e) {
+      const selectedButton = e.target;
+      const correct = selectedButton.dataset.correct === "true";
+
+      Array.from(answerButtons.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct === "true");
+        button.disabled = true;
+      });
+
+      if (correct) {
+        score++;
+        document.getElementById("correct-sound").play();
+      } else {
+        lives--;
+        updateLives();
+        document.getElementById("incorrect-sound").play();
+      }
+
+      explanationElement.innerText = questions[currentQuestionIndex].explanation;
+
+      if (lives <= 0) {
+        gameover();
+        return;
+      }
+
+      nextButton.classList.remove("hidden");
+    }
+
+    function setStatusClass(element, correct) {
+      element.classList.add(correct ? "correct" : "wrong");
+    }
+
+    nextButton.addEventListener("click", () => {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        if (lives > 0) {
+          showScore();
+        } else {
+          gameover();
+        }
+      }
+    });
+
+    function showScore() {
+      resetState();
+      questionElement.innerText = "";
+      scoreContainer.classList.remove("hidden");
+      scoreElement.innerText = `${score} / ${questions.length}`;
+
+      // Salvar progresso da lição 1 (se ainda não tiver sido salva)
+      let progress = JSON.parse(localStorage.getItem("progress")) || [];
+      if (!progress.includes(1)) {
+        progress.push(1);
+        localStorage.setItem("progress", JSON.stringify(progress));
+      }
+    }
+
+    function gameover() {
+      resetState();
+      questionElement.innerText = "";
+      gameoverContainer.classList.remove("hidden");
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>
